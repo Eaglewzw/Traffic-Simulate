@@ -1,0 +1,889 @@
+; .\test.SRC generated from: test.c
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE test.c BROWSE DEBUG OBJECTEXTEND SRC(.\test.SRC)
+
+$NOMOD51
+
+NAME	TEST
+
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+T2	BIT	090H.0
+EA	BIT	0A8H.7
+MainYellow	BIT	0A0H.2
+IE	DATA	0A8H
+EXF2	BIT	0C8H.6
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+RCAP2H	DATA	0CBH
+SecondaryGreen	BIT	0A0H.4
+PS	BIT	0B8H.4
+SP	DATA	081H
+MainRed	BIT	0A0H.0
+T2EX	BIT	090H.1
+OV	BIT	0D0H.2
+RCAP2L	DATA	0CAH
+dula	BIT	0A0H.6
+C_T2	BIT	0C8H.1
+WR	BIT	0B0H.6
+wela	BIT	0A0H.7
+RCLK	BIT	0C8H.5
+SecondaryYellow	BIT	0A0H.5
+TCLK	BIT	0C8H.4
+SBUF	DATA	099H
+PCON	DATA	087H
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+B	DATA	0F0H
+CP_RL2	BIT	0C8H.0
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+SecondaryRed	BIT	0A0H.3
+ET2	BIT	0A8H.5
+TF1	BIT	088H.7
+TF2	BIT	0C8H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+TH2	DATA	0CDH
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+SM2	BIT	098H.5
+TL2	DATA	0CCH
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+PT2	BIT	0B8H.5
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+TR2	BIT	0C8H.2
+PX0	BIT	0B8H.0
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+TurnYellow1	BIT	090H.4
+TurnYellow2	BIT	090H.7
+DPL	DATA	082H
+EXEN2	BIT	0C8H.3
+REN	BIT	098H.4
+T2CON	DATA	0C8H
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+MainGreen	BIT	0A0H.1
+?PR?main?TEST        SEGMENT CODE 
+?PR?SystemInit?TEST  SEGMENT CODE 
+?PR?TimeInit?TEST    SEGMENT CODE 
+?PR?Timer?TEST       SEGMENT CODE 
+?PR?_delay?TEST      SEGMENT CODE 
+?PR?NixieTubeDisplay?TEST                SEGMENT CODE 
+?DT?NixieTubeDisplay?TEST                SEGMENT DATA OVERLAYABLE 
+?PR?LEDfunction?TEST SEGMENT CODE 
+?PR?_YellowLedTwinkle?TEST               SEGMENT CODE 
+?C_INITSEG           SEGMENT CODE 
+?CO?TEST             SEGMENT CODE 
+?DT?TEST             SEGMENT DATA 
+	EXTRN	CODE (_nop)
+	EXTRN	CODE (?C_STARTUP)
+	PUBLIC	MainFigure
+	PUBLIC	flag2
+	PUBLIC	flag1
+	PUBLIC	SecondaryFigure
+	PUBLIC	num2
+	PUBLIC	num1
+	PUBLIC	table1
+	PUBLIC	_YellowLedTwinkle
+	PUBLIC	LEDfunction
+	PUBLIC	NixieTubeDisplay
+	PUBLIC	_delay
+	PUBLIC	Timer
+	PUBLIC	TimeInit
+	PUBLIC	SystemInit
+	PUBLIC	main
+
+	RSEG  ?DT?NixieTubeDisplay?TEST
+?NixieTubeDisplay?BYTE:
+       shi1?544:   DS   2
+	ORG  2
+       bai2?545:   DS   2
+
+	RSEG  ?DT?TEST
+           num1:   DS   1
+           num2:   DS   1
+SecondaryFigure:   DS   1
+          flag1:   DS   1
+          flag2:   DS   1
+     MainFigure:   DS   1
+
+	RSEG  ?CO?TEST
+table1:
+	DB	03FH
+	DB	006H
+	DB	05BH
+	DB	04FH
+	DB	066H
+	DB	06DH
+	DB	07DH
+	DB	007H
+	DB	07FH
+	DB	06FH
+	DB	077H
+
+
+	RSEG  ?C_INITSEG
+	DB	001H
+	DB	num1
+	DB	000H
+
+	DB	001H
+	DB	num2
+	DB	000H
+
+	DB	001H
+	DB	MainFigure
+	DB	02DH
+
+	DB	001H
+	DB	SecondaryFigure
+	DB	030H
+
+	DB	001H
+	DB	flag1
+	DB	000H
+
+	DB	001H
+	DB	flag2
+	DB	000H
+
+; #include<reg52.h>
+; #include<intrins.h>
+; 
+; #define uchar unsigned char
+; #define uint unsigned int
+; 
+; uchar code table1[]={
+; 0x3f,0x06,0x5b,0x4f,
+; 0x66,0x6d,0x7d,0x07,
+; 0x7f,0x6f,0x77}; //数字0-9和初始化字符
+; uchar num1=0,num2=0;//num1为主干道计数值，num2为次干道计数值
+; uchar MainFigure=45;//主干道数字初始化(以红灯开始)
+; uchar SecondaryFigure=48;//次干道初始化(以绿灯开始)
+; uchar flag1=0,flag2=0;//状态1标志位(主干道);状态2标志位(次干道)
+; 
+; sbit dula=P2^6;
+; sbit wela=P2^7;
+; 
+; sbit MainRed=P2^0;//主干道红灯
+; sbit MainGreen=P2^1;//主干道绿灯
+; sbit MainYellow=P2^2;//主干道黄灯
+; 
+; sbit SecondaryRed=P2^3;//次干道红灯
+; sbit SecondaryGreen=P2^4;//次干道绿灯
+; sbit SecondaryYellow=P2^5;//次干道黄灯
+; 
+; sbit TurnYellow1=P1^4;//主转向灯黄灯
+; sbit TurnYellow2=P1^7;//次转向灯黄灯
+; 
+; void SystemInit();//红绿灯夜间系统模式
+; void delay(int z); //延时函数
+; void TimeInit();//定时器初始化
+; void NixieTubeDisplay();//所有数码管显示
+; void LEDfunction();//主次干道红绿灯显示
+; void YellowLedTwinkle(uint num);//3s黄灯闪烁
+; 
+; int main(void)
+
+	RSEG  ?PR?main?TEST
+main:
+	USING	0
+			; SOURCE LINE # 37
+; {
+			; SOURCE LINE # 38
+;  	
+; 	TimeInit();
+			; SOURCE LINE # 40
+	LCALL	TimeInit
+?C0001:
+; 	
+; 	while(1)
+			; SOURCE LINE # 42
+; 	{	
+			; SOURCE LINE # 43
+; 		 SystemInit();//红绿灯夜间系统模式
+			; SOURCE LINE # 44
+	LCALL	SystemInit
+; 		//NixieTubeDisplay();
+; 		//LEDfunction();//主次干道红绿灯显示
+; 			
+; 	}  		  
+			; SOURCE LINE # 48
+	SJMP 	?C0001
+; END OF main
+
+; }
+; 
+; void SystemInit()//红绿灯系统夜间模式(所有黄灯闪烁)
+
+	RSEG  ?PR?SystemInit?TEST
+SystemInit:
+	USING	0
+			; SOURCE LINE # 51
+; {
+			; SOURCE LINE # 52
+; 	MainYellow=SecondaryYellow=TurnYellow1=TurnYellow2=1;
+			; SOURCE LINE # 53
+	SETB 	TurnYellow2
+	SETB 	TurnYellow1
+	SETB 	SecondaryYellow
+	SETB 	MainYellow
+; 	delay(500);
+			; SOURCE LINE # 54
+	MOV  	R7,#0F4H
+	MOV  	R6,#01H
+	LCALL	_delay
+; 	MainYellow=SecondaryYellow=TurnYellow1=TurnYellow2=0;
+			; SOURCE LINE # 55
+	CLR  	TurnYellow2
+	CLR  	TurnYellow1
+	CLR  	SecondaryYellow
+	CLR  	MainYellow
+; 	delay(500);
+			; SOURCE LINE # 56
+	MOV  	R7,#0F4H
+	MOV  	R6,#01H
+	LJMP 	_delay
+; END OF SystemInit
+
+; }
+; 
+; void TimeInit()
+
+	RSEG  ?PR?TimeInit?TEST
+TimeInit:
+			; SOURCE LINE # 59
+; {
+			; SOURCE LINE # 60
+; 	TMOD=0x01;
+			; SOURCE LINE # 61
+	MOV  	TMOD,#01H
+; 	TH0=(65535-45872)/256;
+			; SOURCE LINE # 62
+	MOV  	TH0,#04CH
+; 	TL0=(65535-45872)%256;
+			; SOURCE LINE # 63
+	MOV  	TL0,#0CFH
+; 	EA=1;//打开总中断
+			; SOURCE LINE # 64
+	SETB 	EA
+; 	ET0=1;//打开定时器0中断
+			; SOURCE LINE # 65
+	SETB 	ET0
+;     TR0=1;//启动定时器0
+			; SOURCE LINE # 66
+	SETB 	TR0
+; }
+			; SOURCE LINE # 67
+	RET  	
+; END OF TimeInit
+
+CSEG	AT	0000BH
+	LJMP	Timer
+
+; 
+; void Timer() interrupt 1
+
+	RSEG  ?PR?Timer?TEST
+	USING	0
+Timer:
+	PUSH 	ACC
+	PUSH 	PSW
+			; SOURCE LINE # 69
+; {
+;  	TH0=(65535-45872)/256;
+			; SOURCE LINE # 71
+	MOV  	TH0,#04CH
+; 	TL0=(65535-45872)%256;
+			; SOURCE LINE # 72
+	MOV  	TL0,#0CFH
+; 	num1++;num2++;
+			; SOURCE LINE # 73
+	INC  	num1
+	INC  	num2
+; 	if(num1==20)//1秒到了
+			; SOURCE LINE # 74
+	MOV  	A,num1
+	CJNE 	A,#014H,?C0006
+; 	{
+			; SOURCE LINE # 75
+; 		num1=0;
+			; SOURCE LINE # 76
+	MOV  	num1,#00H
+; 		MainFigure--;
+			; SOURCE LINE # 77
+	DJNZ 	MainFigure,?C0006
+; 		if(MainFigure==0)
+			; SOURCE LINE # 78
+; 		{
+			; SOURCE LINE # 79
+; 			flag1++;
+			; SOURCE LINE # 80
+	INC  	flag1
+; 			switch(flag1)
+			; SOURCE LINE # 81
+	MOV  	A,flag1
+	ADD  	A,#0FEH
+	JZ   	?C0010
+	DEC  	A
+	JZ   	?C0011
+	ADD  	A,#02H
+	JNZ  	?C0006
+; 			{
+			; SOURCE LINE # 82
+; 			 	case 1:MainFigure=3;break;//(标志位1)3s黄灯
+			; SOURCE LINE # 83
+?C0009:
+	MOV  	MainFigure,#03H
+	SJMP 	?C0006
+; 				case 2:MainFigure=30;break;//(标志位2)30s绿灯
+			; SOURCE LINE # 84
+?C0010:
+	MOV  	MainFigure,#01EH
+	SJMP 	?C0006
+; 				case 3:MainFigure=45;flag1=0;break;//(标志位3)45s红灯，回到起始位
+			; SOURCE LINE # 85
+?C0011:
+	MOV  	MainFigure,#02DH
+	MOV  	flag1,#00H
+; 			}
+			; SOURCE LINE # 86
+; 		}
+			; SOURCE LINE # 87
+; 			 
+; 	}  
+			; SOURCE LINE # 89
+?C0006:
+; 	if(num2==20)
+			; SOURCE LINE # 90
+	MOV  	A,num2
+	CJNE 	A,#014H,?C0018
+; 	{
+			; SOURCE LINE # 91
+; 	 	num2=0;
+			; SOURCE LINE # 92
+	MOV  	num2,#00H
+; 		SecondaryFigure--;
+			; SOURCE LINE # 93
+	DJNZ 	SecondaryFigure,?C0018
+; 		if(SecondaryFigure==0)
+			; SOURCE LINE # 94
+; 		{
+			; SOURCE LINE # 95
+; 			flag2++;
+			; SOURCE LINE # 96
+	INC  	flag2
+; 			switch(flag2)
+			; SOURCE LINE # 97
+	MOV  	A,flag2
+	ADD  	A,#0FEH
+	JZ   	?C0016
+	DEC  	A
+	JZ   	?C0017
+	ADD  	A,#02H
+	JNZ  	?C0018
+; 			{
+			; SOURCE LINE # 98
+; 			 	case 1:SecondaryFigure=27;break;//(标志位1)27s红灯
+			; SOURCE LINE # 99
+?C0015:
+	MOV  	SecondaryFigure,#01BH
+	SJMP 	?C0018
+; 				case 2:SecondaryFigure=3;break;//(标志位2)3s黄灯
+			; SOURCE LINE # 100
+?C0016:
+	MOV  	SecondaryFigure,#03H
+	SJMP 	?C0018
+; 				case 3:SecondaryFigure=48;flag2=0;break;//(标志位3)48s绿灯,回到起始位
+			; SOURCE LINE # 101
+?C0017:
+	MOV  	SecondaryFigure,#030H
+	MOV  	flag2,#00H
+; 			}			   
+			; SOURCE LINE # 102
+; 		} 
+			; SOURCE LINE # 103
+; 	
+; 	} 	
+			; SOURCE LINE # 105
+; 
+; }
+			; SOURCE LINE # 107
+?C0018:
+	POP  	PSW
+	POP  	ACC
+	RETI 	
+; END OF Timer
+
+; 
+; void delay(int z)
+
+	RSEG  ?PR?_delay?TEST
+L?0044:
+	USING	0
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	P0,A
+	CLR  	dula
+	MOV  	P0,#0FFH
+	MOV  	R7,#03H
+	MOV  	R6,#00H
+_delay:
+	USING	0
+			; SOURCE LINE # 109
+;---- Variable 'z?440' assigned to Register 'R6/R7' ----
+; {
+			; SOURCE LINE # 110
+; 	int x,y;
+; 	for(x=z;x>0;x--)
+			; SOURCE LINE # 112
+;---- Variable 'x?441' assigned to Register 'R6/R7' ----
+?C0019:
+	SETB 	C
+	MOV  	A,R7
+	SUBB 	A,#00H
+	MOV  	A,R6
+	XRL  	A,#080H
+	SUBB 	A,#080H
+	JC   	?C0025
+; 	for(y=110;y>0;y--);
+			; SOURCE LINE # 113
+;---- Variable 'y?442' assigned to Register 'R4/R5' ----
+	MOV  	R5,#06EH
+	MOV  	R4,#00H
+?C0022:
+	MOV  	A,R5
+	DEC  	R5
+	JNZ  	?C0042
+	DEC  	R4
+?C0042:
+	MOV  	A,R5
+	ORL  	A,R4
+	JNZ  	?C0022
+?C0021:
+	MOV  	A,R7
+	DEC  	R7
+	JNZ  	?C0019
+	DEC  	R6
+?C0043:
+	SJMP 	?C0019
+; }
+			; SOURCE LINE # 114
+?C0025:
+	RET  	
+; END OF _delay
+
+; 
+; void NixieTubeDisplay()//所有数码管显示
+
+	RSEG  ?PR?NixieTubeDisplay?TEST
+NixieTubeDisplay:
+	USING	0
+			; SOURCE LINE # 116
+; {
+			; SOURCE LINE # 117
+; 	int bai1,shi1;
+; 	int bai2,shi2;
+; 	bai1=MainFigure/10;
+			; SOURCE LINE # 120
+	MOV  	A,MainFigure
+	MOV  	B,#0AH
+	DIV  	AB
+	MOV  	R7,A
+	MOV  	R6,#00H
+;---- Variable 'bai1?543' assigned to Register 'R6/R7' ----
+; 	shi1=MainFigure%10;
+			; SOURCE LINE # 121
+	MOV  	A,MainFigure
+	MOV  	B,#0AH
+	DIV  	AB
+	MOV  	R5,B
+	MOV  	shi1?544,#00H
+	MOV  	shi1?544+01H,R5
+; 	bai2=SecondaryFigure/10;
+			; SOURCE LINE # 122
+	MOV  	A,SecondaryFigure
+	MOV  	B,#0AH
+	DIV  	AB
+	MOV  	bai2?545,#00H
+	MOV  	bai2?545+01H,A
+; 	shi2=SecondaryFigure%10;//分离数字
+			; SOURCE LINE # 123
+	MOV  	A,SecondaryFigure
+	MOV  	B,#0AH
+	DIV  	AB
+;---- Variable 'shi2?546' assigned to Register 'R2/R3' ----
+	MOV  	R3,B
+	MOV  	R2,#00H
+; 
+; 	wela=1;
+			; SOURCE LINE # 125
+	SETB 	wela
+; 	P0=0xBE;//1011 1110
+			; SOURCE LINE # 126
+	MOV  	P0,#0BEH
+; 	wela=0;
+			; SOURCE LINE # 127
+	CLR  	wela
+; 	dula=1;
+			; SOURCE LINE # 128
+	SETB 	dula
+; 	P0=table1[bai1];
+			; SOURCE LINE # 129
+	MOV  	A,#LOW (table1)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,R6
+	ADDC 	A,#HIGH (table1)
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	P0,A
+; 	dula=0;
+			; SOURCE LINE # 130
+	CLR  	dula
+; 	P0=0xff;
+			; SOURCE LINE # 131
+	MOV  	P0,#0FFH
+; 	delay(3);
+			; SOURCE LINE # 132
+	MOV  	R7,#03H
+	LCALL	_delay
+; 	wela=1;
+			; SOURCE LINE # 133
+	SETB 	wela
+; 	P0=0x7D;//0111 1101
+			; SOURCE LINE # 134
+	MOV  	P0,#07DH
+; 	wela=0;
+			; SOURCE LINE # 135
+	CLR  	wela
+; 	dula=1;
+			; SOURCE LINE # 136
+	SETB 	dula
+; 	P0=table1[shi1];	 
+			; SOURCE LINE # 137
+	MOV  	A,#LOW (table1)
+	ADD  	A,shi1?544+01H
+	MOV  	DPL,A
+	MOV  	A,#HIGH (table1)
+	ADDC 	A,shi1?544
+; 	dula=0;
+			; SOURCE LINE # 138
+; 	P0=0xff;
+			; SOURCE LINE # 139
+; 	delay(3);//主干道数码管	  
+			; SOURCE LINE # 140
+	LCALL	L?0044
+; 
+; 	wela=1;
+			; SOURCE LINE # 142
+	SETB 	wela
+; 	P0=0xEB;//1110 1011
+			; SOURCE LINE # 143
+	MOV  	P0,#0EBH
+; 	wela=0;
+			; SOURCE LINE # 144
+	CLR  	wela
+; 	dula=1;
+			; SOURCE LINE # 145
+	SETB 	dula
+; 	P0=table1[bai2];
+			; SOURCE LINE # 146
+	MOV  	A,#LOW (table1)
+	ADD  	A,bai2?545+01H
+	MOV  	DPL,A
+	MOV  	A,#HIGH (table1)
+	ADDC 	A,bai2?545
+; 	dula=0;
+			; SOURCE LINE # 147
+; 	P0=0xff;
+			; SOURCE LINE # 148
+; 	delay(3); 
+			; SOURCE LINE # 149
+	LCALL	L?0044
+; 
+; 
+; 	wela=1;
+			; SOURCE LINE # 152
+	SETB 	wela
+; 	P0=0xD7;//1101 0111
+			; SOURCE LINE # 153
+	MOV  	P0,#0D7H
+; 	wela=0;
+			; SOURCE LINE # 154
+	CLR  	wela
+; 	dula=1;
+			; SOURCE LINE # 155
+	SETB 	dula
+; 	P0=table1[shi2];	 
+			; SOURCE LINE # 156
+	MOV  	R6,#00H
+	MOV  	R7,AR3
+	MOV  	A,#LOW (table1)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,R6
+	ADDC 	A,#HIGH (table1)
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	P0,A
+; 	dula=0;
+			; SOURCE LINE # 157
+	CLR  	dula
+; 	P0=0xff;
+			; SOURCE LINE # 158
+	MOV  	P0,#0FFH
+; 	delay(3);//次干道 
+			; SOURCE LINE # 159
+	MOV  	R7,#03H
+	LJMP 	_delay
+; END OF NixieTubeDisplay
+
+; }
+; 
+; void LEDfunction()//主次干道红绿灯显示
+
+	RSEG  ?PR?LEDfunction?TEST
+LEDfunction:
+	USING	0
+			; SOURCE LINE # 162
+; {
+			; SOURCE LINE # 163
+; 	if((flag1==0||flag1==3)&&(MainFigure>=1&&MainFigure<=45))
+			; SOURCE LINE # 164
+	MOV  	A,flag1
+	JZ   	?C0028
+	CJNE 	A,#03H,?C0027
+?C0028:
+	MOV  	A,MainFigure
+	CLR  	C
+	SUBB 	A,#01H
+	JC   	?C0027
+	MOV  	A,MainFigure
+	SETB 	C
+	SUBB 	A,#02DH
+	JNC  	?C0027
+; 	{MainRed=0;MainYellow=1;MainGreen=1;}//主干道红灯
+			; SOURCE LINE # 165
+	CLR  	MainRed
+	SETB 	MainYellow
+	SETB 	MainGreen
+?C0027:
+; 	if((flag1==1)&&(MainFigure>=1&&MainFigure<=3))
+			; SOURCE LINE # 166
+	MOV  	A,flag1
+	CJNE 	A,#01H,?C0029
+	MOV  	A,MainFigure
+	CLR  	C
+	SUBB 	A,#01H
+	JC   	?C0029
+	MOV  	A,MainFigure
+	SETB 	C
+	SUBB 	A,#03H
+	JNC  	?C0029
+; 	{MainRed=1;MainYellow=0;YellowLedTwinkle(1);MainGreen=1;}//主干道黄灯
+			; SOURCE LINE # 167
+	SETB 	MainRed
+	CLR  	MainYellow
+	MOV  	R7,#01H
+	MOV  	R6,#00H
+	LCALL	_YellowLedTwinkle
+	SETB 	MainGreen
+?C0029:
+; 	if((flag1==2)&&(MainFigure>=1&&MainFigure<=30))
+			; SOURCE LINE # 168
+	MOV  	A,flag1
+	CJNE 	A,#02H,?C0030
+	MOV  	A,MainFigure
+	CLR  	C
+	SUBB 	A,#01H
+	JC   	?C0030
+	MOV  	A,MainFigure
+	SETB 	C
+	SUBB 	A,#01EH
+	JNC  	?C0030
+; 	{MainRed=1;MainYellow=1;MainGreen=0;}//主干道绿灯	 
+			; SOURCE LINE # 169
+	SETB 	MainRed
+	SETB 	MainYellow
+	CLR  	MainGreen
+?C0030:
+; 
+; 	if((flag2==0||flag2==3)&&(SecondaryFigure>=1&&SecondaryFigure<=48))
+			; SOURCE LINE # 171
+	MOV  	A,flag2
+	JZ   	?C0032
+	CJNE 	A,#03H,?C0031
+?C0032:
+	MOV  	A,SecondaryFigure
+	CLR  	C
+	SUBB 	A,#01H
+	JC   	?C0031
+	MOV  	A,SecondaryFigure
+	SETB 	C
+	SUBB 	A,#030H
+	JNC  	?C0031
+; 	{SecondaryRed=1;SecondaryGreen=0;SecondaryYellow=1;}//次干道绿灯
+			; SOURCE LINE # 172
+	SETB 	SecondaryRed
+	CLR  	SecondaryGreen
+	SETB 	SecondaryYellow
+?C0031:
+; 	if((flag2==1)&&(SecondaryFigure>=1&&SecondaryFigure<=27))
+			; SOURCE LINE # 173
+	MOV  	A,flag2
+	CJNE 	A,#01H,?C0033
+	MOV  	A,SecondaryFigure
+	CLR  	C
+	SUBB 	A,#01H
+	JC   	?C0033
+	MOV  	A,SecondaryFigure
+	SETB 	C
+	SUBB 	A,#01BH
+	JNC  	?C0033
+; 	{SecondaryRed=0;SecondaryGreen=1;SecondaryYellow=1;}//次干道红灯灯
+			; SOURCE LINE # 174
+	CLR  	SecondaryRed
+	SETB 	SecondaryGreen
+	SETB 	SecondaryYellow
+?C0033:
+; 	if((flag2==2)&&(SecondaryFigure>=1&&SecondaryFigure<=3))
+			; SOURCE LINE # 175
+	MOV  	A,flag2
+	CJNE 	A,#02H,?C0035
+	MOV  	A,SecondaryFigure
+	CLR  	C
+	SUBB 	A,#01H
+	JC   	?C0035
+	MOV  	A,SecondaryFigure
+	SETB 	C
+	SUBB 	A,#03H
+	JNC  	?C0035
+; 	{SecondaryRed=1;SecondaryYellow=0;SecondaryGreen=1;}//次干道黄灯
+			; SOURCE LINE # 176
+	SETB 	SecondaryRed
+	CLR  	SecondaryYellow
+	SETB 	SecondaryGreen
+; }
+			; SOURCE LINE # 177
+?C0035:
+	RET  	
+; END OF LEDfunction
+
+; 
+; void YellowLedTwinkle(uint num)//3s黄灯闪烁
+
+	RSEG  ?PR?_YellowLedTwinkle?TEST
+_YellowLedTwinkle:
+	USING	0
+			; SOURCE LINE # 179
+;---- Variable 'num?747' assigned to Register 'R6/R7' ----
+; {
+			; SOURCE LINE # 180
+; 
+; 	switch(num)
+			; SOURCE LINE # 182
+	MOV  	A,R6
+	JNZ  	?C0041
+	MOV  	A,R7
+	ADD  	A,#0FEH
+	JZ   	?C0038
+	INC  	A
+	JNZ  	?C0041
+; 	{
+			; SOURCE LINE # 183
+; 		case 1:
+			; SOURCE LINE # 184
+?C0037:
+; 		delay(41);//同步微调
+			; SOURCE LINE # 185
+	MOV  	R7,#029H
+	MOV  	R6,#00H
+	LCALL	_delay
+; 		_nop_;
+			; SOURCE LINE # 186
+; 		MainYellow=~MainYellow;//主干道黄灯
+			; SOURCE LINE # 187
+	CPL  	MainYellow
+; 		break;
+			; SOURCE LINE # 188
+	RET  	
+; 
+; 		case 2:
+			; SOURCE LINE # 190
+?C0038:
+; 		delay(41);//同步微调
+			; SOURCE LINE # 191
+	MOV  	R7,#029H
+	MOV  	R6,#00H
+	LCALL	_delay
+; 		_nop();
+			; SOURCE LINE # 192
+	LCALL	_nop
+; 		SecondaryYellow=~SecondaryYellow;//次干道黄灯
+			; SOURCE LINE # 193
+	CPL  	SecondaryYellow
+; 		break;
+			; SOURCE LINE # 194
+; 
+; 
+; 		case 3:
+			; SOURCE LINE # 197
+; 
+; 
+; 		break;
+			; SOURCE LINE # 200
+; 
+; 		case 4:
+			; SOURCE LINE # 202
+; 		
+; 		
+; 		break; 
+			; SOURCE LINE # 205
+; 	
+; 	
+; 	}
+			; SOURCE LINE # 208
+; }
+			; SOURCE LINE # 209
+?C0041:
+	RET  	
+; END OF _YellowLedTwinkle
+
+	END

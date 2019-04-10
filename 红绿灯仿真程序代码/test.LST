@@ -1,0 +1,381 @@
+C51 COMPILER V9.00   TEST                                                                  11/04/2018 16:30:11 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE TEST
+OBJECT MODULE PLACED IN test.OBJ
+COMPILER INVOKED BY: F:\KEIL5\C51\BIN\C51.EXE test.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include<intrins.h>
+   3          
+   4          #define uchar unsigned char
+   5          #define uint unsigned int
+   6          
+   7          uchar code table1[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x77}; //数字0-9和初始化字符
+   8          uchar num1=0,num2=0;//num1为主干道计数值，num2为次干道计数值
+   9          //用int是因为uchar的范围为0-255。
+  10          int MainFigure=47;//主干道数字初始化(以红灯开始)
+  11          uchar SecondaryFigure=50;//次干道初始化(以绿灯开始)
+  12          uchar MainTemp=47;//主干道数字修改变量
+  13          uchar SecondaryTemp=50;//次干道修改变量
+  14          
+  15          //flag处于1、2、3依次表示处于红黄绿不同的状态
+  16          uchar flag1=0,flag2=0;//状态1标志位(主干道);状态2标志位(次干道)
+  17          
+  18          uchar ChooseFlag=0;//ChooseFlag选中标志位
+  19          
+  20          sbit dula=P2^6;//段选
+  21          sbit wela=P2^7;//位选
+  22          
+  23          sbit MainSideWalkRed=P1^0;//主干道人行道红灯
+  24          sbit MainSideWalkGreen=P1^1;//主干道人行道绿灯
+  25          sbit SecondaryWalkRed=P3^6;//次干道人行道红灯
+  26          sbit SecondaryWalkGreen=P3^7;//次干道人行道绿灯
+  27          
+  28          sbit MainRed=P2^0;//主干道红灯
+  29          sbit MainGreen=P2^1;//主干道绿灯
+  30          sbit MainYellow=P2^2;//主干道黄灯
+  31          
+  32          sbit SecondaryRed=P2^3;//次干道红灯
+  33          sbit SecondaryGreen=P2^4;//次干道绿灯
+  34          sbit SecondaryYellow=P2^5;//次干道黄灯
+  35          
+  36          sbit KeySet=P1^2;//设置按键
+  37          sbit TimeUp=P1^3;//加键
+  38          sbit TimeDown=P1^4;//减键
+  39          
+  40          
+  41          /*
+  42                  代码说明：
+  43                  红绿灯分为主干道和次干道，主次干道时间红绿灯时间是相同的。
+  44                  本代码不涉及转向灯的设计部分。具体说明如下：
+  45                  初始化后：
+  46                  主干道 绿灯30s  红灯47s 黄灯3s(固定)
+  47                  次干道 绿灯50s  红灯27s 黄灯3s(固定)
+  48                  程序中本来总的时间为80s,通过按键只可修改主干道红灯，次干道绿灯的值，且一旦主道红灯确定
+  49                  次干道绿灯的值也就确定了，所以只要通过按键修改一个干道的时间即可。
+  50                  在这里主干道和次干道只是相对概念，因实际放置位置而分别确定。
+  51                  
+  52          */
+  53          
+  54          
+  55          
+C51 COMPILER V9.00   TEST                                                                  11/04/2018 16:30:11 PAGE 2   
+
+  56          void delay_ms(int z); //延时函数
+  57          void TimeInit();//定时器初始化
+  58          void NixieTubeDisplay();//所有数码管显示
+  59          void LEDfunction();//主次干道红绿灯显示
+  60          void TrafficTimeSet();
+  61          
+  62          int main(void)
+  63          {
+  64   1              uchar task=0;
+  65   1              TimeInit();
+  66   1      
+  67   1              while(1)
+  68   1              {       
+  69   2                      
+  70   2                      TrafficTimeSet();
+  71   2                              
+  72   2                      NixieTubeDisplay();
+  73   2                      LEDfunction();//主次干道红绿灯显示      
+  74   2                              
+  75   2              }                 
+  76   1      }
+  77          
+  78          void TrafficTimeSet()
+  79          {
+  80   1                      if(KeySet==0)//如果设置按键按下
+  81   1                      {
+  82   2                              delay_ms(10);
+  83   2                              if(KeySet==0)
+  84   2                              {
+  85   3                                      while(!KeySet);//等待按键弹起
+  86   3                                      //全黄
+  87   3                                      
+  88   3                                      //如果根本没按加键减
+  89   3                                      
+  90   3                                      ChooseFlag++;
+  91   3                                      if(ChooseFlag==1)
+  92   3                                      {
+  93   4                                              MainRed=MainGreen=1;
+  94   4                                              MainYellow=0;
+  95   4                                              SecondaryRed=SecondaryGreen=1;
+  96   4                                              SecondaryYellow=0;
+  97   4                                              MainSideWalkRed=MainSideWalkGreen=SecondaryWalkRed=SecondaryWalkGreen=1;
+  98   4                                              num1=num2=0;flag1=0;flag2=0;
+  99   4                                              TR0=0;//关闭定时器0
+ 100   4                                              MainFigure=0;//修改主干道
+ 101   4                                              SecondaryFigure=0;
+ 102   4                                      }
+ 103   3                                      if(ChooseFlag==2)
+ 104   3                                      {
+ 105   4                                              TR0=1;ChooseFlag=0;
+ 106   4                                              if(MainFigure==0)
+ 107   4                                              {
+ 108   5                                                      MainFigure=47;
+ 109   5                                                      SecondaryFigure=50;
+ 110   5                                                      SecondaryTemp=SecondaryFigure;
+ 111   5                                                      MainTemp=MainFigure;//保存变量
+ 112   5                                              }
+ 113   4                                              else
+ 114   4                                              {                                               
+ 115   5                                                      SecondaryFigure=MainFigure+3;//修改的主干道红灯最终结果
+ 116   5                                                      SecondaryTemp=SecondaryFigure;
+ 117   5                                                      MainTemp=MainFigure;//保存变量
+C51 COMPILER V9.00   TEST                                                                  11/04/2018 16:30:11 PAGE 3   
+
+ 118   5                                              }
+ 119   4      
+ 120   4                                      }
+ 121   3                                      
+ 122   3                              }
+ 123   2                      }
+ 124   1                      if(TimeUp==0)
+ 125   1                      {
+ 126   2                              delay_ms(10);
+ 127   2                              if(TimeUp==0)
+ 128   2                              {
+ 129   3                                      while(!TimeUp);//等待按键弹起
+ 130   3      
+ 131   3                                      if(ChooseFlag==1)
+ 132   3                                      {
+ 133   4                                              MainFigure++;
+ 134   4                                              if(MainFigure==97)
+ 135   4                                              {
+ 136   5                                                      MainFigure=47;//最大96,到96回到默认值47
+ 137   5                                                      SecondaryFigure=50;
+ 138   5                                              }
+ 139   4                                              else
+ 140   4                                              SecondaryFigure=MainFigure+3;
+ 141   4                                      
+ 142   4                                      }
+ 143   3                              }
+ 144   2                      }
+ 145   1                      if(TimeDown==0)
+ 146   1                      {
+ 147   2                              delay_ms(10);
+ 148   2                              if(TimeDown==0)
+ 149   2                              {
+ 150   3                                      while(!TimeDown);//等待按键弹起
+ 151   3              
+ 152   3                                      if(ChooseFlag==1)
+ 153   3                                      {
+ 154   4                                              MainFigure--;
+ 155   4                                              if(MainFigure<0)
+ 156   4                                              {
+ 157   5                                                      MainFigure=47;
+ 158   5                                                      SecondaryFigure=50;
+ 159   5                                              }
+ 160   4                                              else
+ 161   4                                              SecondaryFigure=MainFigure+3;
+ 162   4                              
+ 163   4                                      }
+ 164   3                              }
+ 165   2                      }
+ 166   1                      
+ 167   1              
+ 168   1      
+ 169   1      }
+ 170                  
+ 171                  
+ 172                  
+ 173          void TimeInit()
+ 174          {
+ 175   1              TMOD=0x01;
+ 176   1              TH0=(65535-45872)/256;
+ 177   1              TL0=(65535-45872)%256;
+ 178   1              EA=1;//打开总中断
+ 179   1              ET0=1;//打开定时器0中断
+C51 COMPILER V9.00   TEST                                                                  11/04/2018 16:30:11 PAGE 4   
+
+ 180   1          TR0=1;//启动定时器0
+ 181   1      }
+ 182          
+ 183          void Timer() interrupt 1
+ 184          {
+ 185   1              TH0=(65535-45872)/256;
+ 186   1              TL0=(65535-45872)%256;
+ 187   1              num1++;num2++;
+ 188   1              if(num1==20)//1秒到了
+ 189   1              {
+ 190   2                      num1=0;
+ 191   2                      MainFigure--;SecondaryFigure--;
+ 192   2                      if(MainFigure==0)
+ 193   2                      {
+ 194   3                              flag1++;
+ 195   3                              switch(flag1)
+ 196   3                              {
+ 197   4                                      case 1:MainFigure=3;break;//(标志位1)3s黄灯
+ 198   4                                      case 2:MainFigure=30;break;//(标志位2)30s绿灯
+ 199   4                                      case 3:MainFigure=MainTemp;flag1=0;break;//(标志位3)45s红灯，回到起始位
+ 200   4                              }               
+ 201   3                              
+ 202   3                      }       
+ 203   2                      if(SecondaryFigure==0)
+ 204   2                      {
+ 205   3                              flag2++;
+ 206   3                              switch(flag2)
+ 207   3                              {
+ 208   4                                      case 1:SecondaryFigure=27;break;//(标志位1)27s红灯
+ 209   4                                      case 2:SecondaryFigure=3;break;//(标志位2)3s黄灯
+ 210   4                                      case 3:SecondaryFigure=SecondaryTemp;flag2=0;break;//(标志位3)48s绿灯,回到起始位
+ 211   4                              }                          
+ 212   3                      }  
+ 213   2              }
+ 214   1              
+ 215   1              if(num2==11)
+ 216   1              {
+ 217   2                      num2=0;
+ 218   2                      if((flag1==1)&&(MainFigure>=1&&MainFigure<=3))//固定黄灯灯为3秒
+ 219   2                      {
+ 220   3                              MainRed=1;
+ 221   3                              MainGreen=1;
+ 222   3                              MainYellow=~MainYellow;
+ 223   3      
+ 224   3                              MainSideWalkRed=1;
+ 225   3                              MainSideWalkGreen=0;//主干道人行道绿灯
+ 226   3      
+ 227   3      
+ 228   3                      }//主干道黄灯
+ 229   2                      if((flag2==2)&&(SecondaryFigure>=1&&SecondaryFigure<=3))//固定黄灯
+ 230   2                      {
+ 231   3                              SecondaryRed=1;
+ 232   3                              SecondaryGreen=1;
+ 233   3                              SecondaryYellow=~SecondaryYellow;
+ 234   3                              SecondaryWalkRed=1;
+ 235   3                              SecondaryWalkGreen=0;//次干道人行道绿灯
+ 236   3                      }//次干道黄灯
+ 237   2                      
+ 238   2              
+ 239   2              } 
+ 240   1      
+ 241   1      }
+C51 COMPILER V9.00   TEST                                                                  11/04/2018 16:30:11 PAGE 5   
+
+ 242          
+ 243          void delay_ms(int z)
+ 244          {
+ 245   1              int x,y;
+ 246   1              for(x=z;x>0;x--)
+ 247   1              for(y=110;y>0;y--);
+ 248   1      }
+ 249          
+ 250          void NixieTubeDisplay()//所有数码管显示
+ 251          {
+ 252   1              int bai1,shi1;
+ 253   1              int bai2,shi2;
+ 254   1              bai1=MainFigure/10;
+ 255   1              shi1=MainFigure%10;
+ 256   1              bai2=SecondaryFigure/10;
+ 257   1              shi2=SecondaryFigure%10;//分离数字
+ 258   1      
+ 259   1              wela=1;
+ 260   1              P0=0xBE;//1011 1110
+ 261   1              wela=0;
+ 262   1              dula=1;
+ 263   1              P0=table1[bai1];
+ 264   1              dula=0;
+ 265   1              P0=0xff;
+ 266   1              delay_ms(3);
+ 267   1              
+ 268   1              wela=1;
+ 269   1              P0=0x7D;//0111 1101
+ 270   1              wela=0;
+ 271   1              dula=1;
+ 272   1              P0=table1[shi1];         
+ 273   1              dula=0;
+ 274   1              P0=0xff;
+ 275   1              delay_ms(3);//主干道数码管        
+ 276   1      
+ 277   1              wela=1;
+ 278   1              P0=0xEB;//1110 1011
+ 279   1              wela=0;
+ 280   1              dula=1;
+ 281   1              P0=table1[bai2];
+ 282   1              dula=0;
+ 283   1              P0=0xff;
+ 284   1              delay_ms(3); 
+ 285   1      
+ 286   1              wela=1;
+ 287   1              P0=0xD7;//1101 0111
+ 288   1              wela=0;
+ 289   1              dula=1;
+ 290   1              P0=table1[shi2];         
+ 291   1              dula=0;
+ 292   1              P0=0xff;
+ 293   1              delay_ms(3);//次干道 
+ 294   1      }
+ 295          
+ 296          void LEDfunction()//主次干道红绿灯显示
+ 297          {
+ 298   1              if(ChooseFlag==0)
+ 299   1              {
+ 300   2                      if((flag1==0||flag1==3)&&(MainFigure>=1&&MainFigure<=MainTemp))
+ 301   2                      {
+ 302   3                              MainRed=0;
+ 303   3                              MainYellow=1;
+C51 COMPILER V9.00   TEST                                                                  11/04/2018 16:30:11 PAGE 6   
+
+ 304   3                              MainGreen=1;
+ 305   3      
+ 306   3                              MainSideWalkRed=1;
+ 307   3                              MainSideWalkGreen=0;//主干道人行道绿灯
+ 308   3      
+ 309   3      
+ 310   3                      }//主干道红灯
+ 311   2      
+ 312   2                      if((flag1==2)&&(MainFigure>=1&&MainFigure<=30))
+ 313   2                      {
+ 314   3                              MainRed=1;
+ 315   3                              MainYellow=1;
+ 316   3                              MainGreen=0;
+ 317   3      
+ 318   3                              MainSideWalkGreen=1;
+ 319   3                              MainSideWalkRed=0;
+ 320   3      
+ 321   3      
+ 322   3                      }//主干道绿灯    
+ 323   2      
+ 324   2      
+ 325   2                      if((flag2==0||flag2==3)&&(SecondaryFigure>=1&&SecondaryFigure<=SecondaryTemp))
+ 326   2                      {
+ 327   3                              SecondaryRed=1;
+ 328   3                              SecondaryGreen=0;
+ 329   3                              SecondaryYellow=1;
+ 330   3      
+ 331   3                              SecondaryWalkRed=0;//次干道人行道红灯
+ 332   3                              SecondaryWalkGreen=1;
+ 333   3      
+ 334   3      
+ 335   3                      }//次干道绿灯
+ 336   2                      if((flag2==1)&&(SecondaryFigure>=1&&SecondaryFigure<=27))
+ 337   2                      {
+ 338   3                              SecondaryRed=0;
+ 339   3                              SecondaryGreen=1;
+ 340   3                              SecondaryYellow=1;
+ 341   3      
+ 342   3                              SecondaryWalkRed=1;
+ 343   3                              SecondaryWalkGreen=0;//次干道人行道绿灯
+ 344   3      
+ 345   3                      }//次干道红灯灯  
+ 346   2              }
+ 347   1      
+ 348   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    791    ----
+   CONSTANT SIZE    =     11    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
